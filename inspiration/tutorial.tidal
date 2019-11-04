@@ -1,0 +1,423 @@
+-- dirt samples
+-- playing a single sample
+d1 $ sound "jungle:4"
+
+d2 $ sound "seawolf:2"
+
+d3 $ sound "kurt:5"
+
+
+-- playing more than one sequence
+d1 $ sound "bd sd:1"
+
+hush
+
+d2 $ sound "hh hh hh hh"
+
+d3 $ sound "arpy"
+
+
+-- refer to patterns by name
+p "susan" $ sound "bd sd:1"
+
+p "gerard" $ sound "hh hh hh hh"
+
+
+-- what is a cycle
+d1 $ sound "bd sd"
+
+d1 $ sound "bd sd hh cp mt arpy drum"
+
+d1 $ sound "bd sd hh cp mt arpy drum odx bd arpy bass2 feel future"
+
+
+-- Patterns Within Patterns
+d1 $ sound "bd [sd sd]"
+
+d1 $ sound "bd [sd sd sd]"
+
+d1 $ sound "bd [sd sd sd sd]"
+
+d1 $ sound "[bd bd] [sd sd sd sd]"
+
+d1 $ sound "[bd bd bd] [sd sd]"
+
+d1 $ sound "[bd bd bd bd] [sd]"
+
+d1 $ sound "[bd bd] [bd [sd [sd sd] sd] sd]"
+
+d1 $ sound "bd bd . sd sd sd . bd sd"
+
+d1 $ sound "[bd bd] [sd sd sd] [bd sd]"
+
+
+-- polyrhythms
+d1 $ sound "[bd bd bd, sd cp sd cp]"
+
+d1 $ sound "[bd bd bd, sd cp sd cp, arpy arpy, odx]"
+
+d1 $ sound "[bd bd bd, [sd sd] cp, arpy [arpy [arpy arpy] arpy arpy], odx]"
+
+
+-- one step per cycle
+d1 $ sound "bd <arpy:1 arpy:2 arpy:3>"
+
+
+-- repeat
+d1 $ sound "bd*2"
+
+d1 $ sound "bd*3" -- plays the bd sample three times each cycle
+
+
+-- slow down
+d1 $ sound "bd/2"
+
+d1 $ sound "bd/3" -- plays the bd samples only once each third cycle
+
+
+-- Using * and / on Groups
+d1 $ sound "[bd sn]*2 cp"
+
+d1 $ sound "[bd sn] cp/2"
+
+d1 $ sound "[[bd sn] cp]*2" -- speeds up the entire pattern by 2
+
+d1 $ sound "[[bd sn] cp]/2" -- slows down the entire pattern by 2
+
+d1 $ sound "[bd sn sn*3]/2 [bd sn*3 bd*4]/3"
+
+d1 $ sound "[bd [sn sn]*2]/2 [bd [sn bd]/2]*2"
+
+
+-- Modifying Sequences With Functions
+-- reverse pattern
+d1 $ rev (sound "bd*2 [bd [sn sn*2 sn] sn]")
+
+d2 $ rev (sound "bd bd sn cp")
+
+
+-- reverse pattern every fourth repetition
+d1 $ every 4 (rev) (sound "bd*2 [bd [sn sn*2 sn] sn]")
+
+
+-- slow down or speed up the playback of a pattern
+-- quarter of the speed
+d1 $ slow 4 $ sound "bd*2 [bd [sn sn*2 sn] sn]"
+
+d1 $ fast 4 $ sound "bd*2 [bd [sn sn*2 sn] sn]" -- four times the speed
+
+d1 $ every 4 (fast 4) $ sound "bd*2 [bd sn]" -- apply selectively
+
+d1 $ sound (every 4 (fast 4) "bd*2 [bd sn]") -- apply on inner pattern
+
+
+-- control patterns
+-- combine multiple control patterns
+d1 $ sound "bd*4" # crush "4" # speed "2"
+
+-- pattern in effect values
+d1 $ sound "bd*4" # gain "1 0.8 0.5 0.7"
+
+d1 $ sound "bd*4 sn*4" # gain "[[1 0.8]*2 [0.5 0.7]]/2"
+
+d1 $ sound "bd*4" # (every 3 (rev) $ gain "1 0.8 0.5 0.7")
+
+d1 $ sound "bd*4" # gain (every 3 (rev) $ "1 0.8 0.5 0.7")
+
+
+-- modifying control values
+d1 $ every 2 (|> speed "2") $ sound "arpy*4" |> speed "1"
+
+-- perform arithmetic
+d1 $ every 2 (|+ speed "1") $ sound "arpy*4" |> speed "1"
+
+d1 $ every 2 (|* speed "1.5") $ sound "arpy*4" |> speed "1"
+
+d1 $ every 3 (|- note "3") $ every 2 (|+ up "5") $ sound "arpy*4" |> note "0 2 4 5"
+
+
+-- numerical patterns
+d1 $ sound "arpy(3,8)" # n ("0 2" * 2)
+
+d1 $ sound "arpy(3,8)" # n (every 4 (* 2) "0 2")
+
+d1 $ n (off 0.125 (+12) $ off 0.25 (+7) $ slow 2 $ "0(3,8) [5 7]") # sound "supergong" -- supergong sound requires sc3-plugins to be installed
+
+
+hush
+
+-- specify increasing or decreasing numbers with a range
+d1 $ n "[0 .. 7] [3 .. 1]" # sound "supergong"
+
+
+-- set sample speed
+d1 $ sound "arpy" # speed "1"
+
+d1 $ sound "arpy" # speed "0.5"
+
+d1 $ sound "arpy" # speed "2"
+
+
+-- specify a pattern for speed
+d1 $ speed "1 0.5 2 1.5" # sound "arpy"
+
+
+-- reverse a sample by specifying negative values
+d1 $ speed "-1 -0.5 -2 -1.5" # sound "arpy"
+
+
+-- play sample at multiple speeds
+d1 $ sound "arpy" # speed "[1, 1.5]"
+
+d1 $ speed "[1 0.5, 1.5 2 3 4]" # sound "arpy"
+
+
+-- chromatic scale
+d1 $ up "0 1 2 3 4 5 6 7 8 9 10 11" # sound "arpy"
+
+d1 $ up (run 12) # sound "arpy"
+
+
+-- Euclidean Sequences
+d1 $ sound "bd(5,8)"
+
+d1 $ sound "bd(5,8,2)" -- rotate pattern to start at different step
+
+d1 $ euclid 5 8 $ sound "bd"
+
+d1 $ sound "bd(3,12) sn sn*3"
+
+d1 $ sound "bd(3,8) sn(5,8)"
+
+-- use euclid function over a complex pattern
+-- although the structure of that pattern will be lost
+d1 $ euclid 3 8 $ sound "bd*2 [sn cp]"
+-- three sounds are picked from the pattern on the right
+-- according to the structure given by the euclid 3 8
+-- It ends up picking two bd sounds, a cp and missing the sn entirely.
+
+-- pattern the parameters within the parenthesis
+d1 $ sound "bd([5 3]/2,8)"
+
+
+-- tempo
+
+setcps 1
+
+setcps 1.5
+
+setcps 0.75
+
+setcps 10
+
+setcps 0.5
+
+-- pattern the tempo
+d1 $ sound "cp(3,8)" # cps (slow 8 $ range 0.8 1.6 saw)
+
+
+-- run function
+d1 $ sound "arpy*8" # up (run 8) -- same as
+
+d1 $ up (run 8) # sound "arpy"
+
+d1 $ sound "arpy*8" # speed (run 8)
+
+d1 $ sound "arpy*8" # up (every 2 (rev) $ run 8)
+
+
+-- algorithmically selecting samples
+d1 $ n "0 2 3" # s "arpy"
+
+-- different notations achieving the same
+d1 $ sound $ samples "drum*4" "0 1 2 3"
+
+d1 $ sound $ samples "drum*4" (run 4)
+
+d1 $ sound "drum:0 drum:1 drum:2 drum:3"
+
+d1 $ n (run 4) # s "drum"
+
+-- specify different pattern of sample names
+d1 $ s "drum arpy cp hh" # n (run 10)
+
+d1 $ n (run 10) # s "drum arpy cp hh"
+
+
+-- combining types of patterns
+d1 $ sound "bd sn drum arpy" # pan "0 1 0.25 0.75"
+
+d1 $ pan "0 1 0.25" # sound "bd sn drum arpy"
+
+d1 $ up "0 0*2 0*4 1" # sound "[arpy, bass2, bd]"
+
+-- make structure comes from the right
+d1 $ sound "drum" >|  n "0 1*2 ~ 3"
+
+
+-- oscillation with continuous patterns
+-- bass drum moving smoothly between left and right speakers
+d1 $ sound "bd*16" # pan sine
+
+-- control speed of continuous patterns with slow or density
+d1 $ sound "bd*16" # pan (slow 8 $ saw)
+
+d1 $ sound "bd*8 sn*8" # pan (density 1.75 $ tri)
+
+d1 $ sound "bd*8 sn*8" # speed (density 2 $ tri)
+
+-- combine in different ways
+d1 $ sound "bd*16" # pan (slowcat [sine, saw, square, tri])
+
+d1 $ sound "sn:2*16" # speed ((range 0.5 3 sine) * (slow 4 saw))
+
+-- oscillate between values
+d1 $ sound "bd*8 sn*8" # speed (range 1 3 $ tri)
+
+d1 $ sound "bd*8 sn*8" # speed (slow 4 $ range 1 3 $ tri)
+
+d1 $ sound "bd*8 sn*8" # speed (range (-2) 3 $ tri)
+
+-- slow low-pass filter cutoff
+d1 $ sound "hh*32" # cutoff (range 300 1000 $ slow 4 $ sine) # resonance "0.4"
+
+
+-- rests
+d1 $ sound "bd bd ~ bd"
+
+
+-- polymeters
+d1 $ sound "{bd hh sn cp, arpy bass2 drum notes can}"
+
+d1 $ sound "{arpy bass2 drum notes can, bd hh sn cp}"
+
+-- odd polymeter rhythm without base rhythm
+d1 $ sound "{~ ~ ~ ~, arpy bass2 drum notes can}"
+
+d1 $ sound "{arpy bass2 drum notes can}%4"
+
+
+-- shifting time
+d1 $ (0.25 <~) $ sound "bd*2 cp*2 hh sn"
+
+d1 $ (0.25 ~>) $ sound "bd*2 cp*2 hh sn"
+
+d1 $ every 3 (0.25 <~) $ sound "bd*2 cp*2 hh sn"
+
+d1 $ every 3 (0.25 ~>) $ sound "bd*2 cp*2 hh sn"
+
+d1 $ every 3 (0.0625 <~) $ sound "bd*2 cp*2 hh sn"
+
+d1 $ every 3 (1000 ~>) $ sound "bd*2 cp*2 hh sn"
+
+d1 $ every 3 (1000.125 ~>) $ sound "bd*2 cp*2 hh sn"
+
+d1 $ "[0 0.25]/4" <~ (sound "bd*2 cp*2 hh sn")
+
+
+-- randomness
+d1 $ sound "arpy*4" # pan (rand)
+
+d1 $ sound "arpy*4" # pan (range 0.25 0.75 $ rand)
+
+d1 $ s "arpy*8" # n (irand 30)
+
+d1 $ sound "bd? sd? sd? sd?"
+
+d1 $ sound "bd*16?"
+
+d1 $ sound "bd sn? cp hh?"
+
+d1 $ sound "[bd sn cp hh]?"
+
+d1 $ sound "bd*16?"
+
+d1 $ degrade $ sound "bd*16"
+
+d1 $ degradeBy 0.25 $ sound "bd*16"
+
+d1 $ sometimesBy 0.75 (# crush 4) $ sound "bd arpy sn ~"
+
+d1 $ rarely (# crush 4) $ sound "bd*8"
+
+
+-- variations in patterns
+d1 $ every 5 (|+| speed "0.5")
+   $ every 4 (0.25 <~)
+   $ every 3 (rev)
+   $ sound "bd sn arpy*2 cp"
+   # speed "[1 1.25 0.75 -1.5]/3"
+
+d1 $ whenmod 8 6 (rev) $ sound "bd*2 arpy*2 cp hh*4"
+
+d1 $ every 8 (rev) $ every 4 (density 2) $ sound "bd hh sn cp"
+
+d1 $ whenmod 16 14 (# speed "2") $ sound "bd arpy*2 cp bass2"
+
+-- replace pattern
+d1 $ const (sound "arpy*3") $ sound "bd sn cp hh"
+
+d1 $ whenmod 8 6 (const $ sound "arpy(3,8) bd*4") $ sound "bd sn bass2 sn"
+
+d1 $ every 12 (const $ sound "bd*4 sn*2") $ sound "bd sn bass2 sn"
+
+
+-- composing multi-part patterns
+d1 $ fastcat [sound "bd sn:2" # vowel "[a o]/2",
+             sound "casio casio:1 casio:2*2"]
+
+ d1 $ fastcat [sound "bd sn:2" # vowel "[a o]/2",
+              sound "casio casio:1 casio:2*2",
+              sound "drum drum:2 drum:3 drum:4*2"
+             ]
+
+ d1 $ cat [sound "bd sn:2" # vowel "[a o]/2",
+          sound "casio casio:1 casio:2*2",
+          sound "drum drum:2 drum:3 drum:4*2"
+         ]
+
+ d1 $ stack [
+  sound "bd bd*2",
+  sound "hh*2 [sn cp] cp future*4",
+  sound (samples "arpy*8" (run 16))
+ ]
+
+
+-- truncating samples
+d1 $ sound (samples "arpy*8" (run 8)) # speed "0.25"
+
+d1 $ sound (samples "arpy*8" (run 8)) # speed "0.25" # cut "1"
+
+d2 $ sound (samples "bass2*6" (run 6)) # speed "0.5" # cut "2"
+
+d1 $ stack [
+  sound (samples "arpy*8" (run 8)) # speed "0.25" # cut "1",
+  sound (samples "bass2*6" (run 6)) # speed "0.5" # cut "2" ]
+
+
+-- transitions between patterns
+d1 $ sound (samples "hc*8" (iter 4 $ run 4))
+
+anticipate 1 $ sound (samples "bd(3,8)" (run 3))
+
+xfadeIn 1 16 $ sound "bd(5,8)"
+
+
+-- synths
+d1 $ midinote "60 62*2" # s "supersaw" -- note 60 and 62 of the MIDI scale
+
+d1 $ n "c5 d5*2" # s "supersaw" -- notes by name
+
+d1 $ n "<[a5,cs5,e5,g5]*3 [d5,fs5,g5,c5]>" # s "supersquare" # gain "0.7"
+
+d2 $ every 4 (rev) $ n "<[g5 df5 e5 a5] [gf5 d5 c5 g5]*3>" # s "supersaw"
+
+d1 $ n "0 5" # s "supersaw"
+
+d1 $ n "c5 d5*2" # s "supersaw" # sustain "0.4 0.2"
+
+
+-- silence
+d1 silence -- silence a connection
+
+hush -- silence all connections
