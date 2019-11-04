@@ -1,0 +1,21 @@
+d1 $ sound "cp(3,7,2)"
+   # gain 0.6
+
+d2 $ every 3 (|+| speed "0.8")
+   $ sound "gretsch:1(3,7)"
+   # gain 0.9
+
+d3 $ sound "h:1 ~ ~ ~"
+   # gain 0.8
+
+d4 $ whenmod 8 6 (rev)
+   $ n (run 18) + 6
+   # s "supergong?"
+   # gain 0.6
+
+d5 $ s "newnotes*7"
+   # n "~ 12 18 21 24"
+   # speed "0.5"
+   # gain 0.8
+
+hush
