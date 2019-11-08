@@ -1,0 +1,13 @@
+d1 $ s "sundance(2,5)"
+
+d2 $ "2*4" # sound "808mt"
+
+d3 $ s "cp(3,8)" # gain 0.8
+
+d4 $ up "2 2 ~ 3 ~ ~" # sound "808hc"
+
+d5 $ midinote (slow 2 $ (run 8) * 7 + 50)
+   # s "birds"
+   # cut "1"
+
+hush
